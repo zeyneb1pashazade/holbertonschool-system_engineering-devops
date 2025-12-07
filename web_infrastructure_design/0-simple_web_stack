@@ -1,0 +1,159 @@
+Simple Web Infrastructure Design
+
+Infrastructure Diagram
+
+graph TD
+    User((User)) -- HTTP Request --> Internet
+    Internet -- [www.foobar.com](https://www.foobar.com) resolves to 8.8.8.8 --> Server
+    
+    subgraph Server [Server (IP: 8.8.8.8)]
+        Nginx[Web Server (Nginx)]
+        AppServer[Application Server]
+        AppFiles[Application Files (Code Base)]
+        DB[(Database (MySQL))]
+        
+        Nginx -- Forwards Dynamic Requests --> AppServer
+        Nginx -- Serves Static Files --> AppFiles
+        AppServer -- Reads Code --> AppFiles
+        AppServer -- Queries/Updates --> DB
+    end
+
+
+Specifics of the Infrastructure
+
+User Access Journey:
+
+A user opens their web browser and types www.foobar.com.
+
+The browser queries the Domain Name System (DNS) to find the IP address associated with www.foobar.com.
+
+The DNS system returns the IP address 8.8.8.8.
+
+The browser sends an HTTP request to the server at 8.8.8.8.
+
+The Web Server (Nginx) receives the request. If it's for a static file (image, css), it serves it directly. If it's dynamic, it forwards the request to the Application Server.
+
+The Application Server processes the logic, using the Application Files and querying the Database (MySQL) if necessary.
+
+The response is sent back through the Web Server to the User's browser.
+
+What is a Server?
+
+A server is a computer (hardware) or a virtual machine equipped with software that allows it to receive requests from other computers (clients) over a network and provide responses (services, data, or resources). In this case, it hosts the entire web stack.
+
+Role of the Domain Name:
+
+The domain name (foobar.com) provides a human-readable address for the website. It acts as an alias for the difficult-to-remember numerical IP address (8.8.8.8), making it easier for users to access the site.
+
+DNS Record Type for www:
+
+The www in www.foobar.com is configured as an A Record (Address Record) because it points directly to an IPv4 address (8.8.8.8).
+
+Role of the Web Server (Nginx):
+
+The web server is the gatekeeper. Its primary role is to accept HTTP/HTTPS requests from clients (users). It handles static content (HTML, CSS, Images) efficiently and acts as a reverse proxy to pass dynamic requests to the application server.
+
+Role of the Application Server:
+
+The application server handles the dynamic business logic of the website. It executes the server-side code (the Application Files), processes user inputs, and interacts with the database to generate dynamic content (e.g., a user's profile page).
+
+Role of the Database (MySQL):
+
+The database is the storage unit. Its role is to persist structured data (such as user accounts, product lists, or posts) so that it can be retrieved, updated, or managed by the application server.
+
+Communication Protocol:
+
+The server communicates with the user's computer using HTTP (Hypertext Transfer Protocol) or HTTPS (secure version), which runs on top of the TCP/IP (Transmission Control Protocol/Internet Protocol) stack.
+
+Issues with this Infrastructure
+
+SPOF (Single Point of Failure):
+
+Since all components (Web Server, App Server, Database) reside on a single server, if this server crashes, experiences a hardware failure, or loses network connectivity, the entire website goes offline. There is no backup.
+
+Downtime during Maintenance:
+
+When deploying new code, updating the operating system, or restarting services (like patching Nginx or MySQL), the website may need to be temporarily unavailable. Since there is only one server, users cannot access the site during these maintenance windows.
+
+Scalability Issues:
+
+This infrastructure is limited to the resources (CPU, RAM, Disk I/O) of a single machine. If the incoming traffic increases significantly, the server will become overloaded and slow down or crash. It cannot scale horizontally (adding more servers) in its current state; it can only scale vertically (upgrading hardware), which has a hard limit.Simple Web Infrastructure Design
+
+Infrastructure Diagram
+
+graph TD
+    User((User)) -- HTTP Request --> Internet
+    Internet -- [www.foobar.com](https://www.foobar.com) resolves to 8.8.8.8 --> Server
+    
+    subgraph Server [Server (IP: 8.8.8.8)]
+        Nginx[Web Server (Nginx)]
+        AppServer[Application Server]
+        AppFiles[Application Files (Code Base)]
+        DB[(Database (MySQL))]
+        
+        Nginx -- Forwards Dynamic Requests --> AppServer
+        Nginx -- Serves Static Files --> AppFiles
+        AppServer -- Reads Code --> AppFiles
+        AppServer -- Queries/Updates --> DB
+    end
+
+
+Specifics of the Infrastructure
+
+User Access Journey:
+
+A user opens their web browser and types www.foobar.com.
+
+The browser queries the Domain Name System (DNS) to find the IP address associated with www.foobar.com.
+
+The DNS system returns the IP address 8.8.8.8.
+
+The browser sends an HTTP request to the server at 8.8.8.8.
+
+The Web Server (Nginx) receives the request. If it's for a static file (image, css), it serves it directly. If it's dynamic, it forwards the request to the Application Server.
+
+The Application Server processes the logic, using the Application Files and querying the Database (MySQL) if necessary.
+
+The response is sent back through the Web Server to the User's browser.
+
+What is a Server?
+
+A server is a computer (hardware) or a virtual machine equipped with software that allows it to receive requests from other computers (clients) over a network and provide responses (services, data, or resources). In this case, it hosts the entire web stack.
+
+Role of the Domain Name:
+
+The domain name (foobar.com) provides a human-readable address for the website. It acts as an alias for the difficult-to-remember numerical IP address (8.8.8.8), making it easier for users to access the site.
+
+DNS Record Type for www:
+
+The www in www.foobar.com is configured as an A Record (Address Record) because it points directly to an IPv4 address (8.8.8.8).
+
+Role of the Web Server (Nginx):
+
+The web server is the gatekeeper. Its primary role is to accept HTTP/HTTPS requests from clients (users). It handles static content (HTML, CSS, Images) efficiently and acts as a reverse proxy to pass dynamic requests to the application server.
+
+Role of the Application Server:
+
+The application server handles the dynamic business logic of the website. It executes the server-side code (the Application Files), processes user inputs, and interacts with the database to generate dynamic content (e.g., a user's profile page).
+
+Role of the Database (MySQL):
+
+The database is the storage unit. Its role is to persist structured data (such as user accounts, product lists, or posts) so that it can be retrieved, updated, or managed by the application server.
+
+Communication Protocol:
+
+The server communicates with the user's computer using HTTP (Hypertext Transfer Protocol) or HTTPS (secure version), which runs on top of the TCP/IP (Transmission Control Protocol/Internet Protocol) stack.
+
+Issues with this Infrastructure
+
+SPOF (Single Point of Failure):
+
+Since all components (Web Server, App Server, Database) reside on a single server, if this server crashes, experiences a hardware failure, or loses network connectivity, the entire website goes offline. There is no backup.
+
+Downtime during Maintenance:
+
+When deploying new code, updating the operating system, or restarting services (like patching Nginx or MySQL), the website may need to be temporarily unavailable. Since there is only one server, users cannot access the site during these maintenance windows.
+
+Scalability Issues:
+
+This infrastructure is limited to the resources (CPU, RAM, Disk I/O) of a single machine. If the incoming traffic increases significantly, the server will become overloaded and slow down or crash. It cannot scale horizontally (adding more servers) in its current state; it can only scale vertically (upgrading hardware), which has a hard limit.
